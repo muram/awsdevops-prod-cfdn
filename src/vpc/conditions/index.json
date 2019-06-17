@@ -2,6 +2,14 @@
 	"CreateNatGateway": {
 		"Fn::Equals": [{ "Ref": "ParamNatGateway" }, "true"]
 	},
+	"CreateVPCEndpoint": {
+		"Fn::Equals": [
+			{
+				"Ref": "ParamVPCEndpoint"
+			},
+			"true"
+		]
+	},
 	"AllowSSHFromRange": {
 		"Fn::Not": [
 			{

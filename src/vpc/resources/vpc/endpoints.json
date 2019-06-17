@@ -1,0 +1,30 @@
+{
+	"VPCEndpoint": {
+		"Type": "AWS::EC2::VPCEndpoint",
+		"Condition": "CreateVPCEndpoint",
+		"Properties": {
+			"PolicyDocument": {
+				"Version": "2012-10-17",
+				"Statement": [
+					{
+						"Effect": "Allow",
+						"Action": "*",
+						"Resource": "*",
+						"Principal": "*"
+					}
+				]
+			},
+			"RouteTableIds": [
+				{
+					"Ref": "PrivateRouteTable"
+				}
+			],
+			"ServiceName": {
+				"Fn::Sub": "com.amazonaws.${AWS::Region}.s3"
+			},
+			"VpcId": {
+				"Ref": "VPC"
+			}
+		}
+	}
+}

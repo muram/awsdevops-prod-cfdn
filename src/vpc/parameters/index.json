@@ -10,6 +10,12 @@
 		"AllowedValues": ["true", "false"],
 		"ConstraintDescription": "Whether to launch a NAT Gateway for the private subnets. true or false only."
 	},
+	"ParamVPCEndpoint": {
+		"Type": "String",
+		"Default": "true",
+		"AllowedValues": ["true", "false"],
+		"ConstraintDescription": "Whether to create an S3 VPC endpoint instead of a NAT Gateway for the private subnets. true or false only."
+	},
 	"ParamAuthorName": {
 		"Type": "String",
 		"Description": "This will be added as a tag called 'Owner' to every resource for easier management."
