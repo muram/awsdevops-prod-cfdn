@@ -1,11 +1,11 @@
 {
-  "name": "awsdevops-prod",
-  "version": "0.1.0",
-  "description": "A CloudFormation project - generated with CloudFoundation",
-  "cloudfoundation": true,
-  "devDependencies": {
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.17.3"
-  }
+	"name": "awsdevops-prod",
+	"version": "0.1.0",
+	"description": "A CloudFormation project - generated with CloudFoundation",
+	"cloudfoundation": true,
+	"devDependencies": {
+		"eslint": "^5.16.0",
+		"eslint-config-airbnb-base": "^13.1.0",
+		"eslint-plugin-import": "^2.17.3"
+	}
 }

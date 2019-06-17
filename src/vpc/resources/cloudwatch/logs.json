@@ -1,8 +1,8 @@
 {
-  "BastionLogs": {
-    "Type": "AWS::Logs::LogGroup",
-    "Properties": {
-      "RetentionInDays": { "Ref": "ParamRetentionInDays" }
-    }
-  }
+	"BastionLogs": {
+		"Type": "AWS::Logs::LogGroup",
+		"Properties": {
+			"RetentionInDays": { "Ref": "ParamRetentionInDays" }
+		}
+	}
 }
