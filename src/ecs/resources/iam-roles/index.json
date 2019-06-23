@@ -1,0 +1,185 @@
+{
+	"AutoscalingRole": {
+		"Type": "AWS::IAM::Role",
+		"Properties": {
+			"RoleName": {
+				"Fn::Join": ["", [{ "Ref": "AWS::StackName" }, "-", "AutoScalingRole"]]
+			},
+			"AssumeRolePolicyDocument": {
+				"Statement": [
+					{
+						"Effect": "Allow",
+						"Principal": {
+							"Service": ["application-autoscaling.amazonaws.com"]
+						},
+						"Action": ["sts:AssumeRole"]
+					}
+				]
+			},
+			"Path": "/",
+			"Policies": [
+				{
+					"PolicyName": "service-autoscaling",
+					"PolicyDocument": {
+						"Statement": [
+							{
+								"Effect": "Allow",
+								"Action": [
+									"application-autoscaling:*",
+									"cloudwatch:DescribeAlarms",
+									"cloudwatch:PutMetricAlarm",
+									"ecs:DescribeServices",
+									"ecs:UpdateService"
+								],
+								"Resource": "*"
+							}
+						]
+					}
+				}
+			],
+			"Tags": [
+				{
+					"Key": "Owner",
+					"Value": { "Ref": "ParamAuthorName" }
+				}
+			]
+		}
+	},
+	"EC2InstanceProfile": {
+		"Type": "AWS::IAM::InstanceProfile",
+		"Properties": {
+			"Path": "/",
+			"Roles": [
+				{
+					"Ref": "EC2Role"
+				}
+			]
+		}
+	},
+	"EC2Role": {
+		"Type": "AWS::IAM::Role",
+		"Properties": {
+			"RoleName": {
+				"Fn::Join": [
+					"",
+					[{ "Ref": "AWS::StackName" }, "-", "ContainerInstanceRole"]
+				]
+			},
+			"AssumeRolePolicyDocument": {
+				"Statement": [
+					{
+						"Effect": "Allow",
+						"Principal": {
+							"Service": ["ec2.amazonaws.com"]
+						},
+						"Action": ["sts:AssumeRole"]
+					}
+				]
+			},
+			"Path": "/",
+			"Policies": [
+				{
+					"PolicyName": "ecs-containerInstance-service",
+					"PolicyDocument": {
+						"Statement": [
+							{
+								"Effect": "Allow",
+								"Action": [
+									"ec2:DescribeTags",
+									"ecs:CreateCluster",
+									"ecs:DeregisterContainerInstance",
+									"ecs:DiscoverPollEndpoint",
+									"ecs:Poll",
+									"ecs:RegisterContainerInstance",
+									"ecs:StartTelemetrySession",
+									"ecs:UpdateContainerInstancesState",
+									"ecs:Submit*",
+									"ecr:GetAuthorizationToken",
+									"ecr:BatchCheckLayerAvailability",
+									"ecr:GetDownloadUrlForLayer",
+									"ecr:BatchGetImage",
+									"logs:CreateLogStream",
+									"logs:PutLogEvents",
+									"ssm:DescribeAssociation",
+									"ssm:GetDeployablePatchSnapshotForInstance",
+									"ssm:GetDocument",
+									"ssm:DescribeDocument",
+									"ssm:GetManifest",
+									"ssm:GetParameters",
+									"ssm:ListAssociations",
+									"ssm:ListInstanceAssociations",
+									"ssm:PutInventory",
+									"ssm:PutComplianceItems",
+									"ssm:PutConfigurePackageResult",
+									"ssm:UpdateAssociationStatus",
+									"ssm:UpdateInstanceAssociationStatus",
+									"ssm:UpdateInstanceInformation"
+								],
+								"Resource": "*"
+							}
+						]
+					}
+				}
+			],
+			"Tags": [
+				{
+					"Key": "Owner",
+					"Value": { "Ref": "ParamAuthorName" }
+				}
+			]
+		}
+	},
+	"ECSRole": {
+		"Type": "AWS::IAM::Role",
+		"Properties": {
+			"RoleName": {
+				"Fn::Join": ["", [{ "Ref": "AWS::StackName" }, "-", "ServiceRole"]]
+			},
+			"AssumeRolePolicyDocument": {
+				"Statement": [
+					{
+						"Effect": "Allow",
+						"Principal": {
+							"Service": ["ecs.amazonaws.com"]
+						},
+						"Action": ["sts:AssumeRole"]
+					}
+				]
+			},
+			"Path": "/",
+			"Policies": [
+				{
+					"PolicyName": "ecs-service",
+					"PolicyDocument": {
+						"Statement": [
+							{
+								"Effect": "Allow",
+								"Action": [
+									"ec2:AttachNetworkInterface",
+									"ec2:CreateNetworkInterface",
+									"ec2:CreateNetworkInterfacePermission",
+									"ec2:DeleteNetworkInterface",
+									"ec2:DeleteNetworkInterfacePermission",
+									"ec2:Describe*",
+									"ec2:DetachNetworkInterface",
+									"elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+									"elasticloadbalancing:DeregisterTargets",
+									"elasticloadbalancing:Describe*",
+									"elasticloadbalancing:RegisterInstancesWithLoadBalancer",
+									"elasticloadbalancing:RegisterTargets"
+								],
+								"Resource": "*"
+							}
+						]
+					}
+				}
+			],
+			"Tags": [
+				{
+					"Key": "Owner",
+					"Value": { "Ref": "ParamAuthorName" }
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,69 @@
+{
+	"EcsHostSecurityGroup": {
+		"Type": "AWS::EC2::SecurityGroup",
+		"Properties": {
+			"GroupName": { "Fn::Sub": "${AWS::StackName}-EcsHost-SG" },
+			"GroupDescription": "Access to the ECS hosts that run containers",
+			"VpcId": {
+				"Fn::ImportValue": {
+					"Fn::Sub": "${ParamNetworkStackName}-VPCId"
+				}
+			},
+			"Tags": [
+				{
+					"Key": "Name",
+					"Value": {
+						"Fn::Sub": "${AWS::StackName}-EcsHost-SG"
+					}
+				},
+				{
+					"Key": "Owner",
+					"Value": { "Ref": "ParamAuthorName" }
+				}
+			]
+		}
+	},
+	"EcsSecurityGroupIngressFromPublicALB": {
+		"Type": "AWS::EC2::SecurityGroupIngress",
+		"Properties": {
+			"Description": "Ingress from the public ALB",
+			"GroupId": {
+				"Ref": "EcsHostSecurityGroup"
+			},
+			"IpProtocol": -1,
+			"SourceSecurityGroupId": {
+				"Ref": "PublicLoadBalancerSG"
+			}
+		}
+	},
+	"EcsSecurityGroupIngressFromPrivateALB": {
+		"Type": "AWS::EC2::SecurityGroupIngress",
+		"Properties": {
+			"Description": "Ingress from the private ALB",
+			"GroupId": {
+				"Ref": "EcsHostSecurityGroup"
+			},
+			"IpProtocol": -1,
+			"SourceSecurityGroupId": {
+				"Ref": "PrivateLoadBalancerSG"
+			}
+		}
+	},
+	"EcsSecurityGroupIngressFromBastion": {
+		"Type": "AWS::EC2::SecurityGroupIngress",
+		"Properties": {
+			"Description": "SSH access from bastion in the same VPC",
+			"GroupId": {
+				"Ref": "EcsHostSecurityGroup"
+			},
+			"IpProtocol": "tcp",
+			"FromPort": "22",
+			"ToPort": "22",
+			"SourceSecurityGroupId": {
+				"Fn::ImportValue": {
+					"Fn::Sub": "${ParamNetworkStackName}-BastionSecurityGroup"
+				}
+			}
+		}
+	}
+}

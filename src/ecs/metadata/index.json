@@ -1,0 +1,39 @@
+{
+	"Author": { "Ref": "ParamAuthorName" },
+	"AWS::CloudFormation::Interface": {
+		"ParameterGroups": [
+			{
+				"Label": { "default": "General Information" },
+				"Parameters": ["ParamAuthorName"]
+			},
+			{
+				"Label": { "default": "VPC Configuration" },
+				"Parameters": ["ParamNetworkStackName"]
+			},
+			{
+				"Label": { "default": "ECS Cluster Configuration" },
+				"Parameters": [
+					"ParamECSDesiredCapacity",
+					"ParamECSMinSize",
+					"ParamECSMaxSize",
+					"ParamEcsInstancesKeyPair",
+					"ParamECSInstanceType"
+				]
+			},
+			{
+				"Label": { "default": "SSL Certificate from ACM" },
+				"Parameters": ["ParamSSLCertificateARN"]
+			}
+		],
+		"ParameterLabels": {
+			"ParamAuthorName": { "default": "Stack Author" },
+			"ParamNetworkStackName": { "default": "VPC Stack Name" },
+			"ParamECSDesiredCapacity": { "default": "ASG Desired Capacity" },
+			"ParamECSMinSize": { "default": "ASG Minimum" },
+			"ParamECSMaxSize": { "default": "ASG Maximum" },
+			"ParamEcsInstancesKeyPair": { "default": "Key Pair Name" },
+			"ParamECSInstanceType": { "default": "ECS Instance Type/Size" },
+			"ParamSSLCertificateARN": { "default": "SSL Certificate ARN" }
+		}
+	}
+}
