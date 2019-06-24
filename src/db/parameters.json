@@ -7,7 +7,7 @@
 	"ParamDatabaseInstanceType": {
 		"Type": "String",
 		"Description": "Instance type for the DB instance (leave blank if using Snapshot)",
-		"Default": "db.r3.large",
+		"Default": "db.t2.small",
 		"AllowedValues": [
 			"db.t2.small",
 			"db.t2.medium",
@@ -56,7 +56,7 @@
 	"ParamDBReadReplica": {
 		"Type": "String",
 		"Description": "Launch a read replica for DB? (leave blank if using Snapshot)",
-		"Default": "true",
+		"Default": "false",
 		"AllowedValues": ["true", "false"],
 		"ConstraintDescription": "true or false only"
 	},
