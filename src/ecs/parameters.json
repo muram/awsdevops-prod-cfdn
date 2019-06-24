@@ -33,6 +33,29 @@
 		"Type": "String",
 		"Description": "ARN of an existing SSL Certificate to use for redirects to HTTPs."
 	},
+	"ParamRetentionInDays": {
+		"Type": "Number",
+		"Description": "The number of days ECS logs are retained",
+		"Default": 7,
+		"AllowedValues": [
+			1,
+			3,
+			5,
+			7,
+			14,
+			30,
+			60,
+			90,
+			120,
+			150,
+			180,
+			365,
+			400,
+			545,
+			731,
+			1827
+		]
+	},
 	"ParamECSInstanceType": {
 		"Description": "ECS EC2 instance type",
 		"Type": "String",

@@ -17,7 +17,8 @@
 					"ParamECSMinSize",
 					"ParamECSMaxSize",
 					"ParamEcsInstancesKeyPair",
-					"ParamECSInstanceType"
+					"ParamECSInstanceType",
+					"ParamRetentionInDays"
 				]
 			},
 			{
@@ -33,7 +34,8 @@
 			"ParamECSMaxSize": { "default": "ASG Maximum" },
 			"ParamEcsInstancesKeyPair": { "default": "Key Pair Name" },
 			"ParamECSInstanceType": { "default": "ECS Instance Type/Size" },
-			"ParamSSLCertificateARN": { "default": "SSL Certificate ARN" }
+			"ParamSSLCertificateARN": { "default": "SSL Certificate ARN" },
+			"ParamRetentionInDays": { "default": "ECS Logs Retention" }
 		}
 	}
 }

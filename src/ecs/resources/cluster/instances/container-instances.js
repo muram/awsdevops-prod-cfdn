@@ -38,8 +38,6 @@ module.exports = {
     Type: 'AWS::AutoScaling::AutoScalingGroup',
     DependsOn: ['ECSCluster'],
     Properties: {
-      // eslint-disable-next-line no-template-curly-in-string
-      AutoScalingGroupName: { 'Fn::Sub': '${AWS::StackName}-ASG' },
       VPCZoneIdentifier: {
         'Fn::Split': [
           ',',
@@ -114,7 +112,7 @@ module.exports = {
           },
           services: {
             sysvinit: {
-              awslogs: {
+              awslogsd: {
                 enabled: true,
                 ensureRunning: true,
                 files: [
