@@ -2,6 +2,9 @@
 	"DBCluster": {
 		"Type": "AWS::RDS::DBCluster",
 		"Properties": {
+			"DBClusterIdentifier": {
+				"Fn::Sub": "${AWS::StackName}-aurora-cluster"
+			},
 			"BackupRetentionPeriod": { "Ref": "ParamDatabaseBackupRetentionPeriod" },
 			"DatabaseName": {
 				"Fn::If": [
