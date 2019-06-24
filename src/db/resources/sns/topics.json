@@ -3,7 +3,7 @@
 		"Type": "AWS::SNS::Topic",
 		"Properties": {
 			"DisplayName": {
-				"Fn::Sub": "${AWS::StackName} DB Alarms Topic"
+				"Fn::Sub": "${AWS::StackName} RDS Alarms Topic"
 			}
 		}
 	},

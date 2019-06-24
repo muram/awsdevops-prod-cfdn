@@ -17,7 +17,7 @@
 				{
 					"Key": "Name",
 					"Value": {
-						"Fn::Sub": "${AWS::StackName}-db-subnet-group"
+						"Fn::Sub": "${AWS::StackName}-rds-subnet-group"
 					}
 				},
 				{

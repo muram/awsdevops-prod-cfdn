@@ -2,7 +2,8 @@
 	"DBAccessSecurityGroup": {
 		"Type": "AWS::EC2::SecurityGroup",
 		"Properties": {
-			"GroupDescription": "Security group for ACCESS to the RDS Cluster",
+			"GroupName": { "Fn::Sub": "${AWS::StackName}-InstanceAccess-SG" },
+			"GroupDescription": "Security group for Apps ACCESS to the RDS Cluster",
 			"VpcId": {
 				"Fn::ImportValue": {
 					"Fn::Sub": "${ParamNetworkStackName}-VPCId"
@@ -11,7 +12,9 @@
 			"Tags": [
 				{
 					"Key": "Name",
-					"Value": "RDS Aurora Cluster ACCESS Security Group"
+					"Value": {
+						"Fn::Sub": "${AWS::StackName}-InstanceAccess-SG"
+					}
 				},
 				{
 					"Key": "Owner",
@@ -23,7 +26,8 @@
 	"DBSecurityGroup": {
 		"Type": "AWS::EC2::SecurityGroup",
 		"Properties": {
-			"GroupDescription": "Security group for RDS Cluster",
+			"GroupName": { "Fn::Sub": "${AWS::StackName}-AdminAccess-SG" },
+			"GroupDescription": "Security group for RDS Cluster admin access",
 			"VpcId": {
 				"Fn::ImportValue": {
 					"Fn::Sub": "${ParamNetworkStackName}-VPCId"
@@ -32,7 +36,9 @@
 			"Tags": [
 				{
 					"Key": "Name",
-					"Value": "RDS Aurora Cluster Security Group"
+					"Value": {
+						"Fn::Sub": "${AWS::StackName}-AdminAccess-SG"
+					}
 				},
 				{
 					"Key": "Owner",

@@ -2,6 +2,12 @@
 	"DBMonitoringRole": {
 		"Type": "AWS::IAM::Role",
 		"Properties": {
+			"RoleName": {
+				"Fn::Join": [
+					"",
+					[{ "Ref": "AWS::StackName" }, "-", "RDSMonitoringRole"]
+				]
+			},
 			"AssumeRolePolicyDocument": {
 				"Statement": [
 					{
