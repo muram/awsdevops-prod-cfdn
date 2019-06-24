@@ -11,7 +11,7 @@
 				]
 			},
 			"DBSubnetGroupName": { "Ref": "DBSubnetGroup" },
-			"Engine": "aurora",
+			"Engine": "aurora-mysql",
 			"KmsKeyId": {
 				"Fn::If": [
 					"CreateFromDBSnapshot",
@@ -52,11 +52,12 @@
 			"StorageEncrypted": {
 				"Fn::If": ["CreateFromDBSnapshot", { "Ref": "AWS::NoValue" }, true]
 			},
+			"DBClusterParameterGroupName": "default.aurora-mysql5.7",
 			"Tags": [
 				{
 					"Key": "Name",
 					"Value": {
-						"Fn::Sub": "${AWS::StackName}-db-cluster"
+						"Fn::Sub": "${AWS::StackName}-aurora-cluster"
 					}
 				},
 				{

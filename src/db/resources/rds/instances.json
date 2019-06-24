@@ -5,7 +5,7 @@
 			"DBClusterIdentifier": { "Ref": "DBCluster" },
 			"DBInstanceClass": { "Ref": "ParamDatabaseInstanceType" },
 			"DBSubnetGroupName": { "Ref": "DBSubnetGroup" },
-			"Engine": "aurora",
+			"Engine": "aurora-mysql",
 			"MonitoringInterval": "30",
 			"MonitoringRoleArn": {
 				"Fn::GetAtt": ["DBMonitoringRole", "Arn"]
@@ -15,7 +15,7 @@
 				{
 					"Key": "Name",
 					"Value": {
-						"Fn::Sub": "${AWS::StackName}-db-instance"
+						"Fn::Sub": "${AWS::StackName}-aurora-master"
 					}
 				},
 				{
@@ -32,7 +32,7 @@
 			"DBClusterIdentifier": { "Ref": "DBCluster" },
 			"DBInstanceClass": { "Ref": "ParamDatabaseInstanceType" },
 			"DBSubnetGroupName": { "Ref": "DBSubnetGroup" },
-			"Engine": "aurora",
+			"Engine": "aurora-mysql",
 			"MonitoringInterval": "30",
 			"MonitoringRoleArn": {
 				"Fn::GetAtt": ["DBMonitoringRole", "Arn"]
@@ -42,7 +42,7 @@
 				{
 					"Key": "Name",
 					"Value": {
-						"Fn::Sub": "${AWS::StackName}-db-instance"
+						"Fn::Sub": "${AWS::StackName}-aurora-replica"
 					}
 				},
 				{
