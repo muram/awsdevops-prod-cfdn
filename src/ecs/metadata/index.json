@@ -18,7 +18,9 @@
 					"ParamECSMaxSize",
 					"ParamEcsInstancesKeyPair",
 					"ParamECSInstanceType",
-					"ParamRetentionInDays"
+					"ParamRetentionInDays",
+					"ParamAdminUser",
+					"ParamSSMParamName"
 				]
 			},
 			{
@@ -35,7 +37,9 @@
 			"ParamEcsInstancesKeyPair": { "default": "Key Pair Name" },
 			"ParamECSInstanceType": { "default": "ECS Instance Type/Size" },
 			"ParamSSLCertificateARN": { "default": "SSL Certificate ARN" },
-			"ParamRetentionInDays": { "default": "ECS Logs Retention" }
+			"ParamRetentionInDays": { "default": "ECS Logs Retention" },
+			"ParamAdminUser": { "default": "IAM User" },
+			"ParamSSMParamName": { "default": "SSM Param ARN" }
 		}
 	}
 }

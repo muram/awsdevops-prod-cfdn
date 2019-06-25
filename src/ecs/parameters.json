@@ -37,6 +37,10 @@
 		"Type": "String",
 		"Description": "An existing IAM user to allow push/pull docker images to ECR."
 	},
+	"ParamSSMParamName": {
+		"Type": "String",
+		"Description": "Name of an existing SSM Parameter Store to use for ECS task role."
+	},
 	"ParamRetentionInDays": {
 		"Type": "Number",
 		"Description": "The number of days ECS logs are retained",
