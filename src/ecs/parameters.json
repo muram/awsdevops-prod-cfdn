@@ -33,6 +33,10 @@
 		"Type": "String",
 		"Description": "ARN of an existing SSL Certificate to use for redirects to HTTPs."
 	},
+	"ParamAdminUser": {
+		"Type": "String",
+		"Description": "An existing IAM user to allow push/pull docker images to ECR."
+	},
 	"ParamRetentionInDays": {
 		"Type": "Number",
 		"Description": "The number of days ECS logs are retained",

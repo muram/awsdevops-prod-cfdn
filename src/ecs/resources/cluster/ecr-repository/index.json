@@ -12,7 +12,17 @@
 						"Sid": "AllowPushPull",
 						"Effect": "Allow",
 						"Principal": {
-							"AWS": ["arn:aws:iam::973300507175:user/cfdn"]
+							"AWS": {
+								"Fn::Join": [
+									"",
+									[
+										"arn:aws:iam::",
+										{ "Ref": "AWS::AccountId" },
+										":",
+										{ "Ref": "ParamAdminUser" }
+									]
+								]
+							}
 						},
 						"Action": [
 							"ecr:GetDownloadUrlForLayer",
