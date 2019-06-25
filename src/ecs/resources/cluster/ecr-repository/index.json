@@ -1,0 +1,31 @@
+{
+	"ECRRepository": {
+		"Type": "AWS::ECR::Repository",
+		"Properties": {
+			"RepositoryName": {
+				"Fn::Sub": "${AWS::StackName}/api"
+			},
+			"RepositoryPolicyText": {
+				"Version": "2008-10-17",
+				"Statement": [
+					{
+						"Sid": "AllowPushPull",
+						"Effect": "Allow",
+						"Principal": {
+							"AWS": ["arn:aws:iam::973300507175:user/cfdn"]
+						},
+						"Action": [
+							"ecr:GetDownloadUrlForLayer",
+							"ecr:BatchGetImage",
+							"ecr:BatchCheckLayerAvailability",
+							"ecr:PutImage",
+							"ecr:InitiateLayerUpload",
+							"ecr:UploadLayerPart",
+							"ecr:CompleteLayerUpload"
+						]
+					}
+				]
+			}
+		}
+	}
+}
