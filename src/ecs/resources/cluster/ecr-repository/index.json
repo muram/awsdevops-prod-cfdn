@@ -18,7 +18,7 @@
 									[
 										"arn:aws:iam::",
 										{ "Ref": "AWS::AccountId" },
-										":",
+										":user/",
 										{ "Ref": "ParamAdminUser" }
 									]
 								]
