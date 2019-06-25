@@ -35,7 +35,19 @@
 						]
 					}
 				]
-			}
+			},
+			"Tags": [
+				{
+					"Key": "Name",
+					"Value": {
+						"Fn::Sub": "${AWS::StackName}/api"
+					}
+				},
+				{
+					"Key": "Owner",
+					"Value": { "Ref": "ParamAuthorName" }
+				}
+			]
 		}
 	}
 }
