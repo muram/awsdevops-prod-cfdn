@@ -21,6 +21,13 @@
 		"MaxLength": 255,
 		"AllowedPattern": "^[a-zA-Z][-a-zA-Z0-9]*$"
 	},
+	"ParamDBStackName": {
+		"Type": "String",
+		"Description": "Name of an active CloudFormation stack that contains the RDS DB cluster resources",
+		"MinLength": 1,
+		"MaxLength": 255,
+		"AllowedPattern": "^[a-zA-Z][-a-zA-Z0-9]*$"
+	},
 	"ParamAuthorName": {
 		"Type": "String",
 		"Description": "This will be added as a tag called 'Owner' to every resource for easier management."

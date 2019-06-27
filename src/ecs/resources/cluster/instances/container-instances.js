@@ -169,6 +169,12 @@ module.exports = {
       },
       SecurityGroups: [
         { Ref: 'EcsHostSecurityGroup' },
+        {
+          'Fn::ImportValue': {
+            // eslint-disable-next-line no-template-curly-in-string
+            'Fn::Sub': '${ParamDBStackName}-DBAccessSecurityGroup',
+          },
+        },
       ],
       InstanceType: { Ref: 'ParamECSInstanceType' },
       KeyName: { Ref: 'ParamEcsInstancesKeyPair' },

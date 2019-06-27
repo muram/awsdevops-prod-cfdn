@@ -11,6 +11,10 @@
 				"Parameters": ["ParamNetworkStackName"]
 			},
 			{
+				"Label": { "default": "RDS DB Configuration" },
+				"Parameters": ["ParamDBStackName"]
+			},
+			{
 				"Label": { "default": "ECS Cluster Configuration" },
 				"Parameters": [
 					"ParamECSDesiredCapacity",
@@ -39,7 +43,8 @@
 			"ParamSSLCertificateARN": { "default": "SSL Certificate ARN" },
 			"ParamRetentionInDays": { "default": "ECS Logs Retention" },
 			"ParamAdminUser": { "default": "IAM User" },
-			"ParamSSMParamName": { "default": "SSM Param ARN" }
+			"ParamSSMParamName": { "default": "SSM Param ARN" },
+			"ParamDBStackName": { "default": "DB Stack Name" }
 		}
 	}
 }
