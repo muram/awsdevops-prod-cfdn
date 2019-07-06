@@ -1,30 +1,31 @@
 {
-	"InternetGateway": {
-		"Type": "AWS::EC2::InternetGateway",
-		"Properties": {
-			"Tags": [
-				{
-					"Key": "Name",
-					"Value": {
-						"Fn::Sub": "${AWS::StackName}-igw"
-					}
-				},
-				{
-					"Key": "Owner",
-					"Value": { "Ref": "ParamAuthorName" }
-				}
-			]
-		}
-	},
-	"InternetGatewayAttachment": {
-		"Type": "AWS::EC2::VPCGatewayAttachment",
-		"Properties": {
-			"VpcId": {
-				"Ref": "VPC"
-			},
-			"InternetGatewayId": {
-				"Ref": "InternetGateway"
-			}
-		}
-	}
+  "InternetGateway": {
+    "Type": "AWS::EC2::InternetGateway",
+    "Properties": {
+      "Tags": [{
+          "Key": "Name",
+          "Value": {
+            "Fn::Sub": "${AWS::StackName}-igw"
+          }
+        },
+        {
+          "Key": "Owner",
+          "Value": {
+            "Ref": "ParamAuthorName"
+          }
+        }
+      ]
+    }
+  },
+  "InternetGatewayAttachment": {
+    "Type": "AWS::EC2::VPCGatewayAttachment",
+    "Properties": {
+      "VpcId": {
+        "Ref": "VPC"
+      },
+      "InternetGatewayId": {
+        "Ref": "InternetGateway"
+      }
+    }
+  }
 }

@@ -1,8 +1,10 @@
 {
-	"ECSLogs": {
-		"Type": "AWS::Logs::LogGroup",
-		"Properties": {
-			"RetentionInDays": { "Ref": "ParamRetentionInDays" }
-		}
-	}
+  "ECSLogs": {
+    "Type": "AWS::Logs::LogGroup",
+    "Properties": {
+      "RetentionInDays": {
+        "Ref": "ParamRetentionInDays"
+      }
+    }
+  }
 }

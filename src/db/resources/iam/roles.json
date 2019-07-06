@@ -1,27 +1,27 @@
 {
-	"DBMonitoringRole": {
-		"Type": "AWS::IAM::Role",
-		"Properties": {
-			"RoleName": {
-				"Fn::Join": [
-					"",
-					[{ "Ref": "AWS::StackName" }, "-", "RDSMonitoringRole"]
-				]
-			},
-			"AssumeRolePolicyDocument": {
-				"Statement": [
-					{
-						"Effect": "Allow",
-						"Principal": {
-							"Service": ["monitoring.rds.amazonaws.com"]
-						},
-						"Action": ["sts:AssumeRole"]
-					}
-				]
-			},
-			"ManagedPolicyArns": [
-				"arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
-			]
-		}
-	}
+  "DBMonitoringRole": {
+    "Type": "AWS::IAM::Role",
+    "Properties": {
+      "RoleName": {
+        "Fn::Join": [
+          "",
+          [{
+            "Ref": "AWS::StackName"
+          }, "-", "RDSMonitoringRole"]
+        ]
+      },
+      "AssumeRolePolicyDocument": {
+        "Statement": [{
+          "Effect": "Allow",
+          "Principal": {
+            "Service": ["monitoring.rds.amazonaws.com"]
+          },
+          "Action": ["sts:AssumeRole"]
+        }]
+      },
+      "ManagedPolicyArns": [
+        "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+      ]
+    }
+  }
 }

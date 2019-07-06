@@ -1,75 +1,82 @@
 {
-	"EcsKmsKey": {
-		"Type": "AWS::KMS::Key",
-		"Properties": {
-			"Description": "key to encrypt the API's sensitive parameters.",
-			"KeyPolicy": {
-				"Version": "2012-10-17",
-				"Id": "key-default-1",
-				"Statement": [
-					{
-						"Sid": "Enable IAM Root User Permissions",
-						"Effect": "Allow",
-						"Principal": {
-							"AWS": {
-								"Fn::Join": [
-									"",
-									["arn:aws:iam::", { "Ref": "AWS::AccountId" }, ":root"]
-								]
-							}
-						},
-						"Action": "kms:*",
-						"Resource": "*"
-					},
-					{
-						"Sid": "Allow administration of the key",
-						"Effect": "Allow",
-						"Principal": {
-							"AWS": {
-								"Fn::Join": [
-									"",
-									[
-										"arn:aws:iam::",
-										{ "Ref": "AWS::AccountId" },
-										":user/",
-										{ "Ref": "ParamAdminUser" }
-									]
-								]
-							}
-						},
-						"Action": [
-							"kms:Create*",
-							"kms:Describe*",
-							"kms:Enable*",
-							"kms:List*",
-							"kms:Put*",
-							"kms:Update*",
-							"kms:Revoke*",
-							"kms:Disable*",
-							"kms:Get*",
-							"kms:Delete*",
-							"kms:ScheduleKeyDeletion",
-							"kms:CancelKeyDeletion"
-						],
-						"Resource": "*"
-					}
-				]
-			},
-			"Tags": [
-				{
-					"Key": "Owner",
-					"Value": { "Ref": "ParamAuthorName" }
-				}
-			]
-		}
-	},
-	"EcsKmsAlias": {
-		"Type": "AWS::KMS::Alias",
-		"Properties": {
-			"AliasName": {
-				"Fn::Sub": "alias/${AWS::StackName}-params"
-			},
-			"TargetKeyId": { "Ref": "EcsKmsKey" }
-		}
-	}
+  "EcsKmsKey": {
+    "Type": "AWS::KMS::Key",
+    "Properties": {
+      "Description": "key to encrypt the API's sensitive parameters.",
+      "KeyPolicy": {
+        "Version": "2012-10-17",
+        "Id": "key-default-1",
+        "Statement": [{
+            "Sid": "Enable IAM Root User Permissions",
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": {
+                "Fn::Join": [
+                  "",
+                  ["arn:aws:iam::", {
+                    "Ref": "AWS::AccountId"
+                  }, ":root"]
+                ]
+              }
+            },
+            "Action": "kms:*",
+            "Resource": "*"
+          },
+          {
+            "Sid": "Allow administration of the key",
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:iam::",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":user/",
+                    {
+                      "Ref": "ParamAdminUser"
+                    }
+                  ]
+                ]
+              }
+            },
+            "Action": [
+              "kms:Create*",
+              "kms:Describe*",
+              "kms:Enable*",
+              "kms:List*",
+              "kms:Put*",
+              "kms:Update*",
+              "kms:Revoke*",
+              "kms:Disable*",
+              "kms:Get*",
+              "kms:Delete*",
+              "kms:ScheduleKeyDeletion",
+              "kms:CancelKeyDeletion"
+            ],
+            "Resource": "*"
+          }
+        ]
+      },
+      "Tags": [{
+        "Key": "Owner",
+        "Value": {
+          "Ref": "ParamAuthorName"
+        }
+      }]
+    }
+  },
+  "EcsKmsAlias": {
+    "Type": "AWS::KMS::Alias",
+    "Properties": {
+      "AliasName": {
+        "Fn::Sub": "alias/${AWS::StackName}-params"
+      },
+      "TargetKeyId": {
+        "Ref": "EcsKmsKey"
+      }
+    }
+  }
 }

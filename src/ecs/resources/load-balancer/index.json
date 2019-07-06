@@ -1,295 +1,290 @@
 {
-	"PublicLoadBalancerSG": {
-		"Type": "AWS::EC2::SecurityGroup",
-		"Properties": {
-			"GroupName": { "Fn::Sub": "${AWS::StackName}-Pub-ALB-SG" },
-			"GroupDescription": "Access to the public facing load balancer",
-			"VpcId": {
-				"Fn::ImportValue": {
-					"Fn::Sub": "${ParamNetworkStackName}-VPCId"
-				}
-			},
-			"SecurityGroupIngress": [
-				{
-					"IpProtocol": "tcp",
-					"FromPort": "80",
-					"ToPort": "80",
-					"CidrIp": "0.0.0.0/0"
-				},
-				{
-					"IpProtocol": "tcp",
-					"FromPort": "443",
-					"ToPort": "443",
-					"CidrIp": "0.0.0.0/0"
-				}
-			],
-			"Tags": [
-				{
-					"Key": "Name",
-					"Value": {
-						"Fn::Sub": "${AWS::StackName}-Pub-ALB-SG"
-					}
-				},
-				{
-					"Key": "Owner",
-					"Value": { "Ref": "ParamAuthorName" }
-				}
-			]
-		}
-	},
-	"PublicLoadBalancer": {
-		"Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
-		"Properties": {
-			"Name": { "Fn::Sub": "${AWS::StackName}-Pub-ALB" },
-			"Scheme": "internet-facing",
-			"LoadBalancerAttributes": [
-				{
-					"Key": "idle_timeout.timeout_seconds",
-					"Value": "30"
-				}
-			],
-			"Subnets": {
-				"Fn::Split": [
-					",",
-					{
-						"Fn::ImportValue": {
-							"Fn::Sub": "${ParamNetworkStackName}-PublicSubnets"
-						}
-					}
-				]
-			},
-			"SecurityGroups": [
-				{
-					"Ref": "PublicLoadBalancerSG"
-				}
-			],
-			"Tags": [
-				{
-					"Key": "Name",
-					"Value": {
-						"Fn::Sub": "${AWS::StackName}-Pub-ALB"
-					}
-				},
-				{
-					"Key": "Owner",
-					"Value": { "Ref": "ParamAuthorName" }
-				}
-			]
-		}
-	},
-	"DummyTargetGroupPublic": {
-		"Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-		"Properties": {
-			"HealthCheckIntervalSeconds": 6,
-			"HealthCheckPath": "/",
-			"HealthCheckProtocol": "HTTP",
-			"HealthCheckTimeoutSeconds": 5,
-			"HealthyThresholdCount": 2,
-			"Name": {
-				"Fn::Join": [
-					"-",
-					[
-						{
-							"Ref": "AWS::StackName"
-						},
-						"drop-1"
-					]
-				]
-			},
-			"Port": 80,
-			"Protocol": "HTTP",
-			"UnhealthyThresholdCount": 2,
-			"VpcId": {
-				"Fn::ImportValue": {
-					"Fn::Sub": "${ParamNetworkStackName}-VPCId"
-				}
-			},
-			"Tags": [
-				{
-					"Key": "Owner",
-					"Value": { "Ref": "ParamAuthorName" }
-				}
-			]
-		}
-	},
-	"PublicLoadBalancerListenerRedirect": {
-		"Type": "AWS::ElasticLoadBalancingV2::Listener",
-		"DependsOn": ["PublicLoadBalancer"],
-		"Properties": {
-			"DefaultActions": [
-				{
-					"Type": "redirect",
-					"RedirectConfig": {
-						"Protocol": "HTTPS",
-						"Port": "443",
-						"Host": "#{host}",
-						"Path": "/#{path}",
-						"Query": "#{query}",
-						"StatusCode": "HTTP_301"
-					}
-				}
-			],
-			"LoadBalancerArn": {
-				"Ref": "PublicLoadBalancer"
-			},
-			"Port": 80,
-			"Protocol": "HTTP"
-		}
-	},
-	"PublicLoadBalancerListenerForward": {
-		"Type": "AWS::ElasticLoadBalancingV2::Listener",
-		"DependsOn": ["PublicLoadBalancer"],
-		"Properties": {
-			"DefaultActions": [
-				{
-					"TargetGroupArn": {
-						"Ref": "DummyTargetGroupPublic"
-					},
-					"Type": "forward"
-				}
-			],
-			"LoadBalancerArn": {
-				"Ref": "PublicLoadBalancer"
-			},
-			"Certificates": [
-				{
-					"CertificateArn": { "Ref": "ParamSSLCertificateARN" }
-				}
-			],
-			"SslPolicy": "ELBSecurityPolicy-2016-08",
-			"Port": 443,
-			"Protocol": "HTTPS"
-		}
-	},
-	"PrivateLoadBalancerSG": {
-		"Type": "AWS::EC2::SecurityGroup",
-		"Properties": {
-			"GroupName": { "Fn::Sub": "${AWS::StackName}-Pri-ALB-SG" },
-			"GroupDescription": "Access to the internal load balancer",
-			"VpcId": {
-				"Fn::ImportValue": {
-					"Fn::Sub": "${ParamNetworkStackName}-VPCId"
-				}
-			},
-			"Tags": [
-				{
-					"Key": "Name",
-					"Value": {
-						"Fn::Sub": "${AWS::StackName}-Pri-ALB-SG"
-					}
-				},
-				{
-					"Key": "Owner",
-					"Value": { "Ref": "ParamAuthorName" }
-				}
-			]
-		}
-	},
-	"PrivateLoadBalancerIngressFromECS": {
-		"Type": "AWS::EC2::SecurityGroupIngress",
-		"Properties": {
-			"Description": "Only accept traffic from a container in the container host security group",
-			"GroupId": {
-				"Ref": "PrivateLoadBalancerSG"
-			},
-			"IpProtocol": -1,
-			"SourceSecurityGroupId": {
-				"Ref": "EcsHostSecurityGroup"
-			}
-		}
-	},
-	"PrivateLoadBalancer": {
-		"Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
-		"Properties": {
-			"Name": { "Fn::Sub": "${AWS::StackName}-Pri-ALB" },
-			"Scheme": "internal",
-			"LoadBalancerAttributes": [
-				{
-					"Key": "idle_timeout.timeout_seconds",
-					"Value": "30"
-				}
-			],
-			"Subnets": {
-				"Fn::Split": [
-					",",
-					{
-						"Fn::ImportValue": {
-							"Fn::Sub": "${ParamNetworkStackName}-PrivateSubnets"
-						}
-					}
-				]
-			},
-			"SecurityGroups": [
-				{
-					"Ref": "PrivateLoadBalancerSG"
-				}
-			],
-			"Tags": [
-				{
-					"Key": "Name",
-					"Value": {
-						"Fn::Sub": "${AWS::StackName}-Pri-ALB"
-					}
-				},
-				{
-					"Key": "Owner",
-					"Value": { "Ref": "ParamAuthorName" }
-				}
-			]
-		}
-	},
-	"DummyTargetGroupPrivate": {
-		"Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-		"Properties": {
-			"HealthCheckIntervalSeconds": 6,
-			"HealthCheckPath": "/",
-			"HealthCheckProtocol": "HTTP",
-			"HealthCheckTimeoutSeconds": 5,
-			"HealthyThresholdCount": 2,
-			"Name": {
-				"Fn::Join": [
-					"-",
-					[
-						{
-							"Ref": "AWS::StackName"
-						},
-						"drop-2"
-					]
-				]
-			},
-			"Port": 80,
-			"Protocol": "HTTP",
-			"UnhealthyThresholdCount": 2,
-			"VpcId": {
-				"Fn::ImportValue": {
-					"Fn::Sub": "${ParamNetworkStackName}-VPCId"
-				}
-			},
-			"Tags": [
-				{
-					"Key": "Owner",
-					"Value": { "Ref": "ParamAuthorName" }
-				}
-			]
-		}
-	},
-	"PrivateLoadBalancerListener": {
-		"Type": "AWS::ElasticLoadBalancingV2::Listener",
-		"DependsOn": ["PrivateLoadBalancer"],
-		"Properties": {
-			"DefaultActions": [
-				{
-					"TargetGroupArn": {
-						"Ref": "DummyTargetGroupPrivate"
-					},
-					"Type": "forward"
-				}
-			],
-			"LoadBalancerArn": {
-				"Ref": "PrivateLoadBalancer"
-			},
-			"Port": 80,
-			"Protocol": "HTTP"
-		}
-	}
+  "PublicLoadBalancerSG": {
+    "Type": "AWS::EC2::SecurityGroup",
+    "Properties": {
+      "GroupName": {
+        "Fn::Sub": "${AWS::StackName}-Pub-ALB-SG"
+      },
+      "GroupDescription": "Access to the public facing load balancer",
+      "VpcId": {
+        "Fn::ImportValue": {
+          "Fn::Sub": "${ParamNetworkStackName}-VPCId"
+        }
+      },
+      "SecurityGroupIngress": [{
+          "IpProtocol": "tcp",
+          "FromPort": "80",
+          "ToPort": "80",
+          "CidrIp": "0.0.0.0/0"
+        },
+        {
+          "IpProtocol": "tcp",
+          "FromPort": "443",
+          "ToPort": "443",
+          "CidrIp": "0.0.0.0/0"
+        }
+      ],
+      "Tags": [{
+          "Key": "Name",
+          "Value": {
+            "Fn::Sub": "${AWS::StackName}-Pub-ALB-SG"
+          }
+        },
+        {
+          "Key": "Owner",
+          "Value": {
+            "Ref": "ParamAuthorName"
+          }
+        }
+      ]
+    }
+  },
+  "PublicLoadBalancer": {
+    "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    "Properties": {
+      "Name": {
+        "Fn::Sub": "${AWS::StackName}-Pub-ALB"
+      },
+      "Scheme": "internet-facing",
+      "LoadBalancerAttributes": [{
+        "Key": "idle_timeout.timeout_seconds",
+        "Value": "30"
+      }],
+      "Subnets": {
+        "Fn::Split": [
+          ",",
+          {
+            "Fn::ImportValue": {
+              "Fn::Sub": "${ParamNetworkStackName}-PublicSubnets"
+            }
+          }
+        ]
+      },
+      "SecurityGroups": [{
+        "Ref": "PublicLoadBalancerSG"
+      }],
+      "Tags": [{
+          "Key": "Name",
+          "Value": {
+            "Fn::Sub": "${AWS::StackName}-Pub-ALB"
+          }
+        },
+        {
+          "Key": "Owner",
+          "Value": {
+            "Ref": "ParamAuthorName"
+          }
+        }
+      ]
+    }
+  },
+  "DummyTargetGroupPublic": {
+    "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    "Properties": {
+      "HealthCheckIntervalSeconds": 6,
+      "HealthCheckPath": "/",
+      "HealthCheckProtocol": "HTTP",
+      "HealthCheckTimeoutSeconds": 5,
+      "HealthyThresholdCount": 2,
+      "Name": {
+        "Fn::Join": [
+          "-",
+          [{
+              "Ref": "AWS::StackName"
+            },
+            "drop-1"
+          ]
+        ]
+      },
+      "Port": 80,
+      "Protocol": "HTTP",
+      "UnhealthyThresholdCount": 2,
+      "VpcId": {
+        "Fn::ImportValue": {
+          "Fn::Sub": "${ParamNetworkStackName}-VPCId"
+        }
+      },
+      "Tags": [{
+        "Key": "Owner",
+        "Value": {
+          "Ref": "ParamAuthorName"
+        }
+      }]
+    }
+  },
+  "PublicLoadBalancerListenerRedirect": {
+    "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    "DependsOn": ["PublicLoadBalancer"],
+    "Properties": {
+      "DefaultActions": [{
+        "Type": "redirect",
+        "RedirectConfig": {
+          "Protocol": "HTTPS",
+          "Port": "443",
+          "Host": "#{host}",
+          "Path": "/#{path}",
+          "Query": "#{query}",
+          "StatusCode": "HTTP_301"
+        }
+      }],
+      "LoadBalancerArn": {
+        "Ref": "PublicLoadBalancer"
+      },
+      "Port": 80,
+      "Protocol": "HTTP"
+    }
+  },
+  "PublicLoadBalancerListenerForward": {
+    "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    "DependsOn": ["PublicLoadBalancer"],
+    "Properties": {
+      "DefaultActions": [{
+        "TargetGroupArn": {
+          "Ref": "DummyTargetGroupPublic"
+        },
+        "Type": "forward"
+      }],
+      "LoadBalancerArn": {
+        "Ref": "PublicLoadBalancer"
+      },
+      "Certificates": [{
+        "CertificateArn": {
+          "Ref": "ParamSSLCertificateARN"
+        }
+      }],
+      "SslPolicy": "ELBSecurityPolicy-2016-08",
+      "Port": 443,
+      "Protocol": "HTTPS"
+    }
+  },
+  "PrivateLoadBalancerSG": {
+    "Type": "AWS::EC2::SecurityGroup",
+    "Properties": {
+      "GroupName": {
+        "Fn::Sub": "${AWS::StackName}-Pri-ALB-SG"
+      },
+      "GroupDescription": "Access to the internal load balancer",
+      "VpcId": {
+        "Fn::ImportValue": {
+          "Fn::Sub": "${ParamNetworkStackName}-VPCId"
+        }
+      },
+      "Tags": [{
+          "Key": "Name",
+          "Value": {
+            "Fn::Sub": "${AWS::StackName}-Pri-ALB-SG"
+          }
+        },
+        {
+          "Key": "Owner",
+          "Value": {
+            "Ref": "ParamAuthorName"
+          }
+        }
+      ]
+    }
+  },
+  "PrivateLoadBalancerIngressFromECS": {
+    "Type": "AWS::EC2::SecurityGroupIngress",
+    "Properties": {
+      "Description": "Only accept traffic from a container in the container host security group",
+      "GroupId": {
+        "Ref": "PrivateLoadBalancerSG"
+      },
+      "IpProtocol": -1,
+      "SourceSecurityGroupId": {
+        "Ref": "EcsHostSecurityGroup"
+      }
+    }
+  },
+  "PrivateLoadBalancer": {
+    "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    "Properties": {
+      "Name": {
+        "Fn::Sub": "${AWS::StackName}-Pri-ALB"
+      },
+      "Scheme": "internal",
+      "LoadBalancerAttributes": [{
+        "Key": "idle_timeout.timeout_seconds",
+        "Value": "30"
+      }],
+      "Subnets": {
+        "Fn::Split": [
+          ",",
+          {
+            "Fn::ImportValue": {
+              "Fn::Sub": "${ParamNetworkStackName}-PrivateSubnets"
+            }
+          }
+        ]
+      },
+      "SecurityGroups": [{
+        "Ref": "PrivateLoadBalancerSG"
+      }],
+      "Tags": [{
+          "Key": "Name",
+          "Value": {
+            "Fn::Sub": "${AWS::StackName}-Pri-ALB"
+          }
+        },
+        {
+          "Key": "Owner",
+          "Value": {
+            "Ref": "ParamAuthorName"
+          }
+        }
+      ]
+    }
+  },
+  "DummyTargetGroupPrivate": {
+    "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    "Properties": {
+      "HealthCheckIntervalSeconds": 6,
+      "HealthCheckPath": "/",
+      "HealthCheckProtocol": "HTTP",
+      "HealthCheckTimeoutSeconds": 5,
+      "HealthyThresholdCount": 2,
+      "Name": {
+        "Fn::Join": [
+          "-",
+          [{
+              "Ref": "AWS::StackName"
+            },
+            "drop-2"
+          ]
+        ]
+      },
+      "Port": 80,
+      "Protocol": "HTTP",
+      "UnhealthyThresholdCount": 2,
+      "VpcId": {
+        "Fn::ImportValue": {
+          "Fn::Sub": "${ParamNetworkStackName}-VPCId"
+        }
+      },
+      "Tags": [{
+        "Key": "Owner",
+        "Value": {
+          "Ref": "ParamAuthorName"
+        }
+      }]
+    }
+  },
+  "PrivateLoadBalancerListener": {
+    "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    "DependsOn": ["PrivateLoadBalancer"],
+    "Properties": {
+      "DefaultActions": [{
+        "TargetGroupArn": {
+          "Ref": "DummyTargetGroupPrivate"
+        },
+        "Type": "forward"
+      }],
+      "LoadBalancerArn": {
+        "Ref": "PrivateLoadBalancer"
+      },
+      "Port": 80,
+      "Protocol": "HTTP"
+    }
+  }
 }
